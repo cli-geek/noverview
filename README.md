@@ -1,4 +1,4 @@
-# AI Overview Purger
+# noverview
 
 A browser extension that removes the AI-generated overviews from Google Search results.
 

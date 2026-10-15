@@ -82,6 +82,14 @@ The code is the same on both branches apart from `manifest.json`, which differs 
 
 Mozilla Public License 2.0.
 
+## AI usage attestation
+
+This program and its documentation were created with AI assistance.
+
+Requirements specified at the discretion of cli-geek.
+
+Output reviewed and verified.
+
 ## Support
 
 If you find this useful, consider starring the repo.

@@ -1,29 +1,32 @@
 # AI Overview Purger
 
-Remove AI-generated overviews from Google Search results for a cleaner, distraction-free browsing experience.
+A browser extension that removes the AI-generated overviews from Google Search results.
 
----
+> **Chrome is not supported at the moment.** The Chrome build does not work. Use Firefox.
 
-## ✨ Features
+## Features
 
-* 🚫 Removes Google AI Overviews automatically
-* ⚡ Runs in real-time as results load
-* 🧠 Lightweight and efficient (minimal performance impact)
-* 🔘 Simple toggle to enable or disable anytime
-* 🔒 No data collection - everything runs locally
+* Removes Google AI Overviews automatically
+* Runs as results load
+* Lightweight, with minimal performance impact
+* Toggle to turn it on or off at any time
+* No data collection; everything runs locally
 
----
+## Installation
 
-## 📦 Installation
+### Firefox (add-ons store)
 
-### Chrome / Firefox (via Web Store)
-This extension is currently pending review by Google and Mozilla. After review, you may install the extension at the store pages:
+The listing is pending review by Mozilla. Once approved, install it from https://addons.mozilla.org/en-US/firefox/addon/google-ai-overview-purger/
 
-**Firefox** : https://addons.mozilla.org/en-US/firefox/addon/google-ai-overview-purger/
+### Firefox (manual)
 
-**Chrome** : Pending approval
+1. Go to `about:addons`
+2. Click the gear icon, then **Install Add-on From File**
+3. Select the packaged `.zip`
 
-### 🔵 Chrome (Manual / Dev)
+### Chrome
+
+Unsupported and not working. The extension is not on the Chrome Web Store. The manual steps below load the `main` branch for development only:
 
 1. Clone this repository:
 
@@ -35,43 +38,17 @@ This extension is currently pending review by Google and Mozilla. After review, 
 4. Click **Load unpacked**
 5. Select the project folder
 
----
+## How it works
 
-### 🟣 Firefox (Manual)
+A content script on Google Search pages watches the DOM for changes and removes AI Overview elements as they appear. All processing happens locally in your browser.
 
-1. Go to `about:addons`
-2. Click ⚙️ → **Install Add-on From File**
-3. Select the packaged `.zip`
+## Privacy
 
----
+The extension does not collect user data, track browsing, or make any external requests. The only stored value is a local setting for turning the extension on or off.
 
-## 🧪 How It Works
+## Development
 
-This extension removes AI overview elements from Google Search pages by:
-
-* Injecting lightweight content scripts
-* Observing DOM changes in real-time
-* Removing targeted elements as they appear
-
-All processing happens locally in your browser.
-
----
-
-## 🔐 Privacy
-
-This extension does **not**:
-
-* Collect user data
-* Track browsing activity
-* Send any external requests
-
-The only stored value is a local setting for enabling/disabling the extension.
-
----
-
-## 🛠 Development
-
-### Project Structure
+### Project structure
 
 ```
 .
@@ -84,44 +61,27 @@ The only stored value is a local setting for enabling/disabling the extension.
 ├── icons/
 ```
 
----
+### Cross-browser support
 
-### Cross-Browser Support
+Each browser has its own branch:
 
-This project supports both:
+* `main`: Chrome (Manifest V3, service worker). Currently not working.
+* `firefox`: Firefox (background scripts)
 
-* Chrome (Manifest V3 - service worker)
-* Firefox (background scripts)
+The code is the same on both branches apart from `manifest.json`, which differs to meet Mozilla's and Google's manifest requirements.
 
-Separate branches are used for compatibility:
+## Roadmap
 
-* `main` → Chrome
-* `firefox` → Firefox
-
-Note: there are no major difference in the code between branches. The only difference is within the `manifest.json` file, to ensure compliance with the different standards provided by Mozilla and Google.
----
-
-## 🚀 Roadmap
-
-* Improve selector resilience against Google UI changes
+* Fix Chrome support
+* Make selectors survive Google UI changes
 * Add per-site or per-feature toggles
-* Optimize performance further
-* Enhance UI/UX
+* Improve performance
+* Improve the popup UI
 
----
+## License
 
-## 📄 License
+Mozilla Public License 2.0.
 
-This project is licensed under the Mozilla Public License 2.0.
+## Support
 
----
-
-## 🙌 Acknowledgements
-
-Based on and inspired by earlier work in removing AI-generated content from search results.
-
----
-
-## ⭐ Support
-
-If you find this useful, consider starring the repo!
+If you find this useful, consider starring the repo.

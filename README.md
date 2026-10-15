@@ -31,7 +31,7 @@ Unsupported and not working. The extension is not on the Chrome Web Store. The m
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/cli-geek/AI-Overview-Purge.git
+   git clone https://github.com/cli-geek/noverview.git
    ```
 2. Open `chrome://extensions/`
 3. Enable **Developer mode**

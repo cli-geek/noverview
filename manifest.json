@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "noverview",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "Removes AI overviews from Google Search results.",
     "permissions": [
         "storage"

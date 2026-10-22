@@ -5,7 +5,6 @@ const access = document.getElementById("access");
 // Checkbox id -> storage key. Every setting defaults to on.
 const SETTINGS = {
     toggle: "enabled",
-    compact: "compact",
 };
 
 // Rocker: checkbox id -> linksMode value. Checking one unchecks the other;
@@ -53,25 +52,34 @@ for (const [id, value] of Object.entries(LINKS_MODES)) {
     });
 }
 
-// ===== MORE PAGES =====
-// Slider for extraPages (0-4, default 1). more.js writes pageLimit after a
-// rate limit; positions above its cap are drawn struck out and the slider
-// clamps to the cap. Reset clears pageLimit.
+// ===== SEARCH RESULTS =====
+// Four buttons that set extraPages, labelled with the estimated number of
+// web results they give (about 8 per Google page). more.js writes pageLimit
+// after a rate limit; buttons above its cap are disabled. Reset clears it.
 
-const slider = document.getElementById("extraPages");
-const sliderValue = document.getElementById("extraPagesValue");
-const ticks = document.getElementById("pageTicks");
-const limitNote = document.getElementById("pageLimitNote");
-const limitText = document.getElementById("pageLimitText");
+const RESULTS_PER_PAGE = 8;
+const PAGE_CHOICES = [0, 1, 2, 4];
 const MAX_EXTRA = 4;
 const DAY = 24 * 60 * 60 * 1000;
 
+const results = document.getElementById("results");
+const limitNote = document.getElementById("pageLimitNote");
+const limitText = document.getElementById("pageLimitText");
+
+const estimate = (extra) => `~${(extra + 1) * RESULTS_PER_PAGE}`;
+
+let extraPages = 1;
 let pageLimit = null;
 
-for (let i = 0; i <= MAX_EXTRA; i++) {
-    const tick = document.createElement("span");
-    tick.textContent = i;
-    ticks.append(tick);
+for (const extra of PAGE_CHOICES) {
+    const button = document.createElement("button");
+    button.textContent = estimate(extra);
+    button.addEventListener("click", () => {
+        extraPages = extra;
+        showResults();
+        browser.storage.local.set({ extraPages });
+    });
+    results.append(button);
 }
 
 const clock = (t) =>
@@ -83,55 +91,45 @@ function currentCap() {
     return Math.min(pageLimit.cap, MAX_EXTRA);
 }
 
-function showPageLimit() {
+// A stored value without its own button (e.g. 3 from the old slider) marks
+// the largest choice below it
+function showResults() {
     const cap = currentCap();
-    [...ticks.children].forEach((tick, i) => {
-        tick.classList.toggle("over", i > cap);
-        tick.title = i > cap ? "Limited by Google" : "";
+    const shown = Math.max(...PAGE_CHOICES.filter((c) => c <= Math.min(extraPages, cap)));
+    [...results.children].forEach((button, i) => {
+        const extra = PAGE_CHOICES[i];
+        button.disabled = extra > cap;
+        button.title = extra > cap ? "Limited by Google" : "";
+        button.setAttribute("aria-pressed", String(extra === shown));
     });
 
     limitNote.hidden = cap === MAX_EXTRA;
     if (limitNote.hidden) return;
     let text = `Google rate-limited at ${clock(pageLimit.setAt)}. ` +
-        `Limited to ${cap} ${cap === 1 ? "page" : "pages"} until tomorrow`;
+        `Limited to ${estimate(cap)} results until tomorrow`;
     if (pageLimit.pausedUntil > Date.now()) {
         text += `, paused until ${clock(pageLimit.pausedUntil)}`;
     }
     limitText.textContent = text + ".";
 }
 
-function showSlider(value) {
-    slider.value = value;
-    sliderValue.textContent = value;
-}
-
 browser.storage.local.get(["extraPages", "pageLimit"]).then((state) => {
-    showSlider(state.extraPages ?? 1);
+    extraPages = state.extraPages ?? 1;
     pageLimit = state.pageLimit ?? null;
-    showPageLimit();
-});
-
-slider.addEventListener("input", () => {
-    sliderValue.textContent = slider.value;
-});
-
-slider.addEventListener("change", () => {
-    const value = Math.min(Number(slider.value), currentCap());
-    showSlider(value);
-    browser.storage.local.set({ extraPages: value });
+    showResults();
 });
 
 document.getElementById("pageLimitReset").addEventListener("click", (e) => {
     e.preventDefault();
     pageLimit = null;
-    showPageLimit();
+    showResults();
     browser.storage.local.remove("pageLimit");
 });
 
 browser.storage.onChanged.addListener((changes, area) => {
     if (area !== "local" || !("pageLimit" in changes)) return;
     pageLimit = changes.pageLimit.newValue ?? null;
-    showPageLimit();
+    showResults();
 });
 
 browser.permissions.contains(SITE).then((granted) => {

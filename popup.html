@@ -22,22 +22,30 @@
     #access button {
       width: 100%;
     }
-    #extraPages {
-      width: 90px;
-      margin: 0 6px;
-    }
-    #pageTicks {
+    #results {
       display: flex;
-      justify-content: space-between;
-      width: 90px;
-      margin: -2px 24px 6px auto;
-      padding: 0 4px;
-      font-size: 10px;
-      box-sizing: content-box;
+      margin: 2px 0 6px;
     }
-    #pageTicks .over {
+    #results button {
+      flex: 1;
+      padding: 3px 0;
+      border: 1px solid #888;
+      background: #fff;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    #results button + button {
+      border-left: none;
+    }
+    #results button[aria-pressed="true"] {
+      background: #1a73e8;
+      border-color: #1a73e8;
+      color: #fff;
+    }
+    #results button:disabled {
       color: #aaa;
       text-decoration: line-through;
+      cursor: default;
     }
     #pageLimitNote {
       margin: 0 0 6px;
@@ -58,18 +66,8 @@
     LINKS ONLY (WITH IMAGES)
     <input type="checkbox" id="linksWithImages">
   </label>
-  <label>
-    COMPACT
-    <input type="checkbox" id="compact">
-  </label>
-  <label>
-    MORE PAGES
-    <span>
-      <input type="range" id="extraPages" min="0" max="4" step="1">
-      <output id="extraPagesValue">1</output>
-    </span>
-  </label>
-  <div id="pageTicks"></div>
+  <div>SEARCH RESULTS</div>
+  <div id="results"></div>
   <p id="pageLimitNote" hidden>
     <span id="pageLimitText"></span>
     <a href="#" id="pageLimitReset">Reset</a>

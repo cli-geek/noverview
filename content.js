@@ -186,7 +186,6 @@ const linksMode = v => ({ off: 'off', withImages: 'images' })[v] ?? null;
 const SETTINGS = {
     enabled: { attr: 'data-noverview', value: onOff },
     linksMode: { attr: 'data-noverview-links', value: linksMode },
-    compact: { attr: 'data-noverview-compact', value: onOff },
     extraPages: { attr: 'data-noverview-more', value: v => (v === 0 ? 'off' : null) },
 };
 

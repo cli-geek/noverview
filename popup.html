@@ -22,6 +22,27 @@
     #access button {
       width: 100%;
     }
+    #extraPages {
+      width: 90px;
+      margin: 0 6px;
+    }
+    #pageTicks {
+      display: flex;
+      justify-content: space-between;
+      width: 90px;
+      margin: -2px 24px 6px auto;
+      padding: 0 4px;
+      font-size: 10px;
+      box-sizing: content-box;
+    }
+    #pageTicks .over {
+      color: #aaa;
+      text-decoration: line-through;
+    }
+    #pageLimitNote {
+      margin: 0 0 6px;
+      font-size: 12px;
+    }
   </style>
 </head>
 <body>
@@ -37,6 +58,22 @@
     LINKS ONLY (WITH IMAGES)
     <input type="checkbox" id="linksWithImages">
   </label>
+  <label>
+    COMPACT
+    <input type="checkbox" id="compact">
+  </label>
+  <label>
+    MORE PAGES
+    <span>
+      <input type="range" id="extraPages" min="0" max="4" step="1">
+      <output id="extraPagesValue">1</output>
+    </span>
+  </label>
+  <div id="pageTicks"></div>
+  <p id="pageLimitNote" hidden>
+    <span id="pageLimitText"></span>
+    <a href="#" id="pageLimitReset">Reset</a>
+  </p>
 
   <div id="access" hidden>
     <p>Needs access to Google Search to run on every search.</p>

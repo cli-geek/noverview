@@ -5,6 +5,7 @@ const access = document.getElementById("access");
 // Checkbox id -> storage key. Every setting defaults to on.
 const SETTINGS = {
     toggle: "enabled",
+    compact: "compact",
 };
 
 // Rocker: checkbox id -> linksMode value. Checking one unchecks the other;
@@ -51,6 +52,87 @@ for (const [id, value] of Object.entries(LINKS_MODES)) {
         browser.storage.local.set({ linksMode: mode });
     });
 }
+
+// ===== MORE PAGES =====
+// Slider for extraPages (0-4, default 1). more.js writes pageLimit after a
+// rate limit; positions above its cap are drawn struck out and the slider
+// clamps to the cap. Reset clears pageLimit.
+
+const slider = document.getElementById("extraPages");
+const sliderValue = document.getElementById("extraPagesValue");
+const ticks = document.getElementById("pageTicks");
+const limitNote = document.getElementById("pageLimitNote");
+const limitText = document.getElementById("pageLimitText");
+const MAX_EXTRA = 4;
+const DAY = 24 * 60 * 60 * 1000;
+
+let pageLimit = null;
+
+for (let i = 0; i <= MAX_EXTRA; i++) {
+    const tick = document.createElement("span");
+    tick.textContent = i;
+    ticks.append(tick);
+}
+
+const clock = (t) =>
+    new Date(t).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+
+// The cap is 4 (no limit) when unset or older than 24h
+function currentCap() {
+    if (!pageLimit || Date.now() - pageLimit.setAt > DAY) return MAX_EXTRA;
+    return Math.min(pageLimit.cap, MAX_EXTRA);
+}
+
+function showPageLimit() {
+    const cap = currentCap();
+    [...ticks.children].forEach((tick, i) => {
+        tick.classList.toggle("over", i > cap);
+        tick.title = i > cap ? "Limited by Google" : "";
+    });
+
+    limitNote.hidden = cap === MAX_EXTRA;
+    if (limitNote.hidden) return;
+    let text = `Google rate-limited at ${clock(pageLimit.setAt)}. ` +
+        `Limited to ${cap} ${cap === 1 ? "page" : "pages"} until tomorrow`;
+    if (pageLimit.pausedUntil > Date.now()) {
+        text += `, paused until ${clock(pageLimit.pausedUntil)}`;
+    }
+    limitText.textContent = text + ".";
+}
+
+function showSlider(value) {
+    slider.value = value;
+    sliderValue.textContent = value;
+}
+
+browser.storage.local.get(["extraPages", "pageLimit"]).then((state) => {
+    showSlider(state.extraPages ?? 1);
+    pageLimit = state.pageLimit ?? null;
+    showPageLimit();
+});
+
+slider.addEventListener("input", () => {
+    sliderValue.textContent = slider.value;
+});
+
+slider.addEventListener("change", () => {
+    const value = Math.min(Number(slider.value), currentCap());
+    showSlider(value);
+    browser.storage.local.set({ extraPages: value });
+});
+
+document.getElementById("pageLimitReset").addEventListener("click", (e) => {
+    e.preventDefault();
+    pageLimit = null;
+    showPageLimit();
+    browser.storage.local.remove("pageLimit");
+});
+
+browser.storage.onChanged.addListener((changes, area) => {
+    if (area !== "local" || !("pageLimit" in changes)) return;
+    pageLimit = changes.pageLimit.newValue ?? null;
+    showPageLimit();
+});
 
 browser.permissions.contains(SITE).then((granted) => {
     access.hidden = granted;

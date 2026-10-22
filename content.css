@@ -30,3 +30,17 @@
 :root:not([data-noverview="off"])[data-noverview-links="images"] [data-noverview-extra=""] {
   display: none !important;
 }
+
+/* ===== MORE PAGES ===== */
+
+/* Appended pages: hidden when the slider is at 0. Non-result blocks inside
+   them are always hidden, so the Images row only ever comes from page 1. */
+:root:not([data-noverview="off"])[data-noverview-more="off"] [data-noverview-page],
+:root:not([data-noverview="off"]) [data-noverview-page] [data-noverview-extra] {
+  display: none !important;
+}
+
+/* Master switch off: appended pages go too */
+:root[data-noverview="off"] [data-noverview-page] {
+  display: none !important;
+}

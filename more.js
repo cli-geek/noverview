@@ -167,11 +167,17 @@ function sanitize(wrapper) {
     }
 }
 
-// Appended blocks can use classes whose CSS only ships with their own page
+// A selector list that styles bare elements (`div`, `body`, `table,div,span,p`
+// ...) rather than classes or ids. Such sheets restyle the whole page.
+const BARE_ELEMENTS = /(^|[{},])\s*(html|body|div|span|p|table|a|h3)\s*[,{]/i;
+
+// Appended blocks can use classes whose CSS only ships with their own page.
+// Only class/id-based sheets are copied: a stray global sheet (like the one
+// in Google's <noscript> fallback) would blank page 1.
 function copyStyles(doc) {
     const have = new Set([...document.querySelectorAll('style')].map(s => s.textContent));
     for (const style of doc.querySelectorAll('style')) {
-        if (have.has(style.textContent)) continue;
+        if (have.has(style.textContent) || BARE_ELEMENTS.test(style.textContent)) continue;
         have.add(style.textContent);
         document.head.append(document.importNode(style, true));
     }
@@ -247,6 +253,9 @@ async function run() {
         while (have < wanted() && !paused()) {
             const { html, cached } = await getHtml(fetchUrl);
             const doc = new DOMParser().parseFromString(html, 'text/html');
+            // DOMParser runs with scripting off, so <noscript> content (Google's
+            // "table,div,span,p{display:none}" fallback) parses as live markup
+            for (const n of doc.querySelectorAll('noscript')) n.remove();
             if (!doc.getElementById('rso')) throw new Blocked();
             if (!cached) cache(fetchUrl, doc);
 

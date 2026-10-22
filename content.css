@@ -1,3 +1,32 @@
-[data-mcpr] {
+/* Loaded by the manifest before first paint, so known blocks never flash.
+   Rules are gated on root attributes that content.js sets to "off" when a
+   popup setting is off. */
+
+/* ===== AI (PURGE AI) ===== */
+
+/* Top AI Overview */
+:root:not([data-noverview="off"]) #Odp5De,
+:root:not([data-noverview="off"]) [data-subtree~="aimc"],
+
+/* People also ask: every answer in it is AI-generated */
+:root:not([data-noverview="off"]) [data-initq],
+
+/* Blocks marked by content.js */
+:root:not([data-noverview="off"]) [data-noverview-hide] {
+  display: none !important;
+}
+
+/* ===== LINKS ONLY ===== */
+/* data-noverview-links: absent = no images, "images" = with images,
+   "off" = links only is off */
+
+/* People also search for and the side panel, in both links-only modes */
+:root:not([data-noverview="off"]):not([data-noverview-links="off"]) #bres,
+:root:not([data-noverview="off"]):not([data-noverview-links="off"]) #rhs,
+
+/* Non-result blocks marked by content.js: all of them in "no images" mode,
+   all but the Images block in "with images" mode */
+:root:not([data-noverview="off"]):not([data-noverview-links]) [data-noverview-extra],
+:root:not([data-noverview="off"])[data-noverview-links="images"] [data-noverview-extra=""] {
   display: none !important;
 }

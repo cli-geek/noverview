@@ -14,6 +14,10 @@
   · <a href="LICENSE.md">MPL-2.0</a>
 </p>
 
+<p align="center">
+  <img src="docs/screenshot.png" alt="A Google search for &quot;origin of the meter&quot; in dark mode. Before: an AI Overview fills the top of the page. With noverview: only web results, with the noverview popup open.">
+</p>
+
 > **Chrome is not supported yet.** Use Firefox 121 or later.
 
 ## Features

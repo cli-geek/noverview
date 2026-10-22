@@ -5,6 +5,7 @@ const access = document.getElementById("access");
 // Checkbox id -> storage key. Every setting defaults to on.
 const SETTINGS = {
     toggle: "enabled",
+    compact: "compact",
 };
 
 // Rocker: checkbox id -> linksMode value. Checking one unchecks the other;

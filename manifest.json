@@ -16,10 +16,12 @@
             ],
             "js": [
                 "browser-polyfill.js",
-                "content.js"
+                "content.js",
+                "more.js"
             ],
             "css": [
-                "content.css"
+                "content.css",
+                "compact.css"
             ],
             "run_at": "document_start"
         }

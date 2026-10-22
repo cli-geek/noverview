@@ -1,0 +1,106 @@
+/* Compact view: shows 10-15 web results per 1080p screen. See
+   plans/compact-view.md. Every rule is gated on the master switch and on the
+   data-noverview-compact attribute that content.js sets to "off" when the
+   COMPACT checkbox is off. Rules only change CSS, never the DOM.
+
+   Part of a result            Selector used (R = [data-rpos]:has(a h3))
+   --------------------------  -------------------------------------------
+   web result                  R  (never bare [data-rpos]: that also matches
+                               items in the Images and Videos blocks)
+   gap between results         #rso :has(> [data-rpos] a h3)  (the block
+                               that wraps a result; :has() cannot nest, so
+                               this stands in for :has(> R))
+   "Web results" heading       R h2
+   title                       R a h3
+   site name + favicon + URL   R :has(> div > cite)  (the block holding the
+                               site name and the cite URL line; the favicon
+                               is its previous sibling, so all sit on one line)
+   URL line                    R cite
+   About this result menu      R span[jsname] > [role="button"]  (hidden)
+   favicon                     R a h3 ~ div img  (shrunk to 16px)
+   line break inside the link  R a > br  (hidden, it adds an empty line)
+   snippet                     R [data-sncf="1"]  (Google's own marker for
+                               the first text block under the title)
+   thumbnails                  R [data-sncf] img  (the favicon is in the
+                               title block, which has no data-sncf)
+   sitelinks, "More results    R [data-sncf]:not([data-sncf="1"])  (every
+   from", "N answers · Top     extra row under the snippet carries a higher
+   answer", "Missing:" rows    data-sncf number)
+
+   Not styled: the Images block ([data-noverview-extra="images"]) holds no
+   result with `a h3` that these selectors reach, and bare [data-rpos] items
+   are never targeted. No obfuscated class names and no positional selectors
+   are used. */
+
+/* Gap between results */
+:root:not([data-noverview="off"]):not([data-noverview-compact="off"]) #rso :has(> [data-rpos] a h3) {
+  margin-top: 0 !important;
+  margin-bottom: 8px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* "About this result" menu: its dots sit at the start of the next line and
+   overlap the title once the layout is tight */
+:root:not([data-noverview="off"]):not([data-noverview-compact="off"]) [data-rpos]:has(a h3) span[jsname] > [role="button"],
+
+/* Repeated "Web results" headings, sitelinks, "More results from", answers
+   rows, and thumbnails */
+:root:not([data-noverview="off"]):not([data-noverview-compact="off"]) [data-rpos]:has(a h3) h2,
+:root:not([data-noverview="off"]):not([data-noverview-compact="off"]) [data-rpos]:has(a h3) [data-sncf]:not([data-sncf="1"]),
+:root:not([data-noverview="off"]):not([data-noverview-compact="off"]) [data-rpos]:has(a h3) [data-sncf] img {
+  display: none !important;
+}
+
+/* Title: 16px, one line, ellipsis */
+:root:not([data-noverview="off"]):not([data-noverview-compact="off"]) [data-rpos]:has(a h3) a h3 {
+  display: block;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 16px !important;
+  line-height: 22px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Site name and URL on one line at 12px, next to the favicon */
+:root:not([data-noverview="off"]):not([data-noverview-compact="off"]) [data-rpos]:has(a h3) :has(> div > cite) {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 12px !important;
+  line-height: 18px !important;
+}
+
+:root:not([data-noverview="off"]):not([data-noverview-compact="off"]) [data-rpos]:has(a h3) cite {
+  font-size: 12px !important;
+  line-height: 18px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Favicon: 16px, and no empty line from the link's <br> */
+:root:not([data-noverview="off"]):not([data-noverview-compact="off"]) [data-rpos]:has(a h3) a h3 ~ div img {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+:root:not([data-noverview="off"]):not([data-noverview-compact="off"]) [data-rpos]:has(a h3) a > br {
+  display: none !important;
+}
+
+/* Snippet: kept, clamped to 2 lines */
+:root:not([data-noverview="off"]):not([data-noverview-compact="off"]) [data-rpos]:has(a h3) [data-sncf="1"] {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin: 2px 0 0 !important;
+  font-size: 13px !important;
+  line-height: 18px !important;
+}

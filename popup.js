@@ -142,3 +142,26 @@ document.getElementById("grant").addEventListener("click", () => {
         access.hidden = granted;
     });
 });
+
+// ===== LOOK =====
+// Master switch off dims and disables the other sections; the header pill
+// follows it. "inert" also keeps them out of keyboard focus.
+const masterBox = document.getElementById("toggle");
+const status = document.getElementById("status");
+
+function showEnabled(on) {
+    document.body.classList.toggle("off", !on);
+    status.textContent = on ? "On" : "Off";
+    document.querySelectorAll(".gated").forEach((el) => {
+        el.inert = !on;
+    });
+}
+
+browser.storage.local.get(SETTINGS.toggle).then((state) => {
+    showEnabled(state[SETTINGS.toggle] ?? true);
+});
+
+masterBox.addEventListener("change", () => showEnabled(masterBox.checked));
+
+document.getElementById("version").textContent =
+    "v" + browser.runtime.getManifest().version;

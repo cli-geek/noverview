@@ -1,16 +1,28 @@
-# noverview
+<p align="center">
+  <img src="icons/icon128.png" width="96" height="96" alt="noverview logo">
+</p>
 
-A browser extension that removes the AI-generated overviews from Google Search results.
+<h1 align="center">noverview</h1>
 
-> **Chrome is not supported at the moment.** The Chrome build does not work. Use Firefox.
+<p align="center">
+  A Firefox extension that hides Google's AI Overviews and leaves you with links to websites.
+</p>
+
+<p align="center">
+  <a href="https://addons.mozilla.org/en-US/firefox/addon/google-ai-overview-purger/">Firefox add-on</a>
+  · <a href="PRIVACY.md">Privacy</a>
+  · <a href="LICENSE.md">MPL-2.0</a>
+</p>
+
+> **Chrome is not supported yet.** Use Firefox 121 or later.
 
 ## Features
 
-* Removes Google AI Overviews automatically
-* Runs as results load
-* Lightweight, with minimal performance impact
-* Toggle to turn it on or off at any time
-* No data collection; everything runs locally
+* Hides the AI Overview at the top of Google Search, and the People also ask box, whose answers are AI-generated.
+* **Links only** hides videos, short videos, images, People also search for and the side panel, so only web results are left. **Links + images** does the same but keeps the Images row.
+* **Search results** loads more results onto one page (about 8, 16, 24 or 40) by fetching Google's next results pages in the background.
+* If Google rate-limits those extra pages, the extension stops, pauses for 30 minutes and lowers the maximum for the next 24 hours. The popup shows the limit and has a Reset link.
+* Nothing is deleted from the page. Turning a setting off brings the hidden parts back straight away.
 
 ## Installation
 
@@ -24,9 +36,11 @@ The listing is pending review by Mozilla. Once approved, install it from https:/
 2. Click the gear icon, then **Install Add-on From File**
 3. Select the packaged `.zip`
 
+On first use, Firefox may ask you to allow access to Google Search. Click **Allow access** in the popup, or turn it on under `about:addons` → noverview → **Permissions**.
+
 ### Chrome
 
-Unsupported and not working. The extension is not on the Chrome Web Store. The manual steps below load the `main` branch for development only:
+Not on the Chrome Web Store and untested. The steps below are for development only:
 
 1. Clone this repository:
 
@@ -40,11 +54,13 @@ Unsupported and not working. The extension is not on the Chrome Web Store. The m
 
 ## How it works
 
-A content script on Google Search pages watches the DOM for changes and removes AI Overview elements as they appear. All processing happens locally in your browser.
+A content script runs on `www.google.com/search` pages. A stylesheet loaded with the page hides the blocks it can match by attribute before they are drawn. The script finds the rest as they load, including any heading that reads "AI Overview", and marks them hidden.
+
+When **Search results** is above about 8, the script requests Google's next results pages one at a time, 750 ms apart. It keeps only the web results, removes scripts from them and adds them below page 1. The Images row is only ever shown from page 1.
 
 ## Privacy
 
-The extension does not collect user data, track browsing, or make any external requests. The only stored value is a local setting for turning the extension on or off.
+The extension does not collect data or send anything to its author or any third party. The only requests it makes are to Google: when **Search results** is above about 8, it fetches Google's next results pages for the search you made, from your browser. See [PRIVACY.md](PRIVACY.md).
 
 ## Development
 
@@ -53,30 +69,21 @@ The extension does not collect user data, track browsing, or make any external r
 ```
 .
 ├── manifest.json
-├── content.js
-├── background.js
+├── content.js          # hides AI and non-link blocks
+├── content.css         # hiding rules, loaded before first paint
+├── more.js             # fetches and appends extra results pages
 ├── popup.html
 ├── popup.js
 ├── browser-polyfill.js
-├── icons/
+└── icons/              # icon.svg is the source for the PNGs
 ```
 
-### Cross-browser support
-
-Each browser has its own branch:
-
-* `main`: Chrome (Manifest V3, service worker). Currently not working.
-* `firefox`: Firefox (background scripts)
-
-The code is the same on both branches apart from `manifest.json`, which differs to meet Mozilla's and Google's manifest requirements.
+To try a change, open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on** and pick `manifest.json`. Click **Reload** there after each edit.
 
 ## Roadmap
 
-* Fix Chrome support
-* Make selectors survive Google UI changes
-* Add per-site or per-feature toggles
-* Improve performance
-* Improve the popup UI
+* Chrome support
+* Google country domains (google.co.uk, google.de and others); only google.com is matched now
 
 ## License
 

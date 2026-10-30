@@ -93,9 +93,8 @@ function mark() {
 // ===== LINKS ONLY =====
 // Marks every block in the results list that holds no web result or answer
 // card (videos, images, People also ask, ...) with [data-noverview-extra].
-// The Images
-// block gets the value "images" so content.css can keep it in the
-// "with images" mode.
+// The Images block gets the value "images" so content.css can keep it in
+// the "with images" mode.
 
 const EXTRA_ATTR = 'data-noverview-extra';
 

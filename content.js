@@ -46,10 +46,22 @@ function onlyChild(el) {
     return true;
 }
 
+// Searches for a known thing (a drink, a mountain) put the AI Overview's
+// label in an entity header above the results: icon, title, share menu.
+// When the label sits in one, the whole header is the block, as long as it
+// holds nothing else worth keeping.
+const ENTITY = '[data-kpid]';
+const KEEP = `${ORGANIC}, ${ANSWER}, img`;
+
+function headerFor(anchor) {
+    const header = anchor.closest(ENTITY);
+    return header && !header.querySelector(KEEP) ? header : null;
+}
+
 // Climb while the wrapper holds nothing but this block. Results that load
 // later can change the answer, so this is recomputed on every flush.
 function blockFor(anchor) {
-    let node = anchor.closest(ANCHORS) ?? anchor;
+    let node = anchor.closest(ANCHORS) ?? headerFor(anchor) ?? anchor;
     while (
         node.parentElement &&
         !node.parentElement.matches(STOPS) &&

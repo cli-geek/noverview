@@ -12,6 +12,10 @@ const ANCHORS = '#Odp5De, [data-initq]';
 // contain one.
 const ORGANIC = 'a h3';
 
+// Google's answer cards (calculator, currency and unit converters, weather)
+// carry data-md. They are not AI and are never hidden.
+const ANSWER = '[data-md]';
+
 // Heading text per UI language. Unknown languages still get the CSS rules.
 const LABELS = new Set([
     'ai overview',
@@ -50,7 +54,8 @@ function blockFor(anchor) {
         node.parentElement &&
         !node.parentElement.matches(STOPS) &&
         onlyChild(node) &&
-        !node.parentElement.querySelector(ORGANIC)
+        !node.parentElement.querySelector(ORGANIC) &&
+        !node.parentElement.querySelector(ANSWER)
     ) {
         node = node.parentElement;
     }
@@ -86,8 +91,9 @@ function mark() {
 }
 
 // ===== LINKS ONLY =====
-// Marks every block in the results list that holds no web result (videos,
-// images, People also ask, ...) with [data-noverview-extra]. The Images
+// Marks every block in the results list that holds no web result or answer
+// card (videos, images, People also ask, ...) with [data-noverview-extra].
+// The Images
 // block gets the value "images" so content.css can keep it in the
 // "with images" mode.
 
@@ -111,7 +117,8 @@ function isImages(block) {
 }
 
 // A child holding one result is that result; holding several, it is a group
-// that may mix results with other blocks, so look inside it.
+// that may mix results with other blocks, so look inside it. An answer card
+// is kept whole.
 function pruneWithin(container, results) {
     for (const child of container.children) {
         if (INERT.has(child.tagName)) continue;
@@ -123,7 +130,7 @@ function pruneWithin(container, results) {
         } else {
             child.removeAttribute(EXTRA_ATTR);
         }
-        if (n > 1) pruneWithin(child, results);
+        if (n > 1 && !child.matches(ANSWER)) pruneWithin(child, results);
     }
 }
 
@@ -134,6 +141,9 @@ function prune() {
     const results = new Set();
     for (const h3 of rso.querySelectorAll(ORGANIC)) {
         results.add(h3.closest(RESULT) ?? h3.closest('a'));
+    }
+    for (const card of rso.querySelectorAll(ANSWER)) {
+        if (!card.parentElement.closest(ANSWER)) results.add(card);
     }
     pruneWithin(rso, results);
 }

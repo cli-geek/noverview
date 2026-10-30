@@ -23,7 +23,7 @@
 ## Features
 
 * Hides the AI Overview at the top of Google Search, and the People also ask box, whose answers are AI-generated.
-* **Links only** hides videos, short videos, images, People also search for and the side panel, so only web results are left. **Links + images** does the same but keeps the Images row.
+* **Links only** hides videos, short videos, images, People also search for and the side panel, so only web results are left. Answer cards such as the calculator, currency and unit converters and weather stay. **Links + images** does the same but keeps the Images row.
 * **Search results** loads more results onto one page (about 8, 16, 24 or 40) by fetching Google's next results pages in the background.
 * If Google rate-limits those extra pages, the extension stops, pauses for 30 minutes and lowers the maximum for the next 24 hours. The popup shows the limit and has a Reset link.
 * Nothing is deleted from the page. Turning a setting off brings the hidden parts back straight away.

@@ -18,6 +18,10 @@
   <img src="docs/screenshot.png" alt="A Google search for &quot;origin of the meter&quot; in dark mode. Before: an AI Overview fills the top of the page. With noverview: only web results, with the noverview popup open.">
 </p>
 
+> **This extension is no longer supported, and new updates are not being shipped. If you notice something is broken, feel free to make a fork, but I will not be shipping new updates. AI tools, and specifically the Google AI Overview, have increased greatly in quality over the past few years. I am now of the belief you are hindering yourself, rather than helping yourself, by removing the AI overview. If you truly do not want AI in your search engine, use DuckDuckGo's NoAI domain:** 
+
+<p align="center">`noai.duckduckgo.com`</p>
+
 > **Chrome is not supported yet.** Use Firefox 121 or later.
 
 ## Features
